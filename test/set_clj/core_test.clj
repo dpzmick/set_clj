@@ -48,3 +48,18 @@
                                    {:color :green :dog :rectangle}
                                    {:color :pink  :shape :cat}
                                    ])))))
+
+(deftest is-set
+  (testing "does it recognize a valid set"
+        (is (is-set? [
+                      {:color :red, :shape :squiggle, :number 1}
+                      {:color :red, :shape :squiggle, :number 2}
+                      {:color :red, :shape :squiggle, :number 3}
+                      ]))))
+(deftest is-not-set
+  (testing "does it recognize a valid set"
+        (is (not (is-set? [
+                      {:color :red, :shape :oval,     :number 2}
+                      {:color :red, :shape :squiggle, :number 2}
+                      {:color :red, :shape :squiggle, :number 3}
+                      ])))))

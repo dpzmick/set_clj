@@ -25,10 +25,16 @@
        (recur (rest cards) attrs))) ))
 
 ;; check that all attributes are valid for a set
+;; TODO reduce with and??
 (defn is-set?
   [cards]
-  (let
-    [attrs-validated (map (fn [attr] check-single-attribute attr cards))]))
+  (and
+    (all-have-same-attributes cards)
+    (reduce
+      (fn [acc bool] (and acc bool))
+      (map
+        (fn [attr] (check-single-attribute attr cards))
+        (keys (first cards))))))
 
 (defn -main
   "I don't do a whole lot ... yet."
