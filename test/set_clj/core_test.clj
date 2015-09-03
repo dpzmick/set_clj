@@ -1,0 +1,50 @@
+(ns set-clj.core-test
+  (:require [clojure.test :refer :all]
+            [set-clj.core :refer :all]))
+
+(deftest test-check-single-attr-same
+  (testing "does it recognize all same attribute"
+    (is (check-single-attribute :color [
+                                        {:color :red}
+                                        {:color :red}
+                                        {:color :red}
+                                        ]))))
+
+(deftest test-check-single-attr-diff
+  (testing "does it recognize all different attribute"
+    (is (check-single-attribute :color [
+                                        {:color :red}
+                                        {:color :green}
+                                        {:color :bleu}
+                                        ]))))
+
+(deftest test-check-single-attr-almost-diff
+  (testing "does it recognize almost all different attribute"
+    (is (not (check-single-attribute :color [
+                                        {:color :red}
+                                        {:color :red}
+                                        {:color :bleu}
+                                        ])))))
+
+(deftest test-check-single-attr-not-def
+  (testing "does it return false when one of the cards doesn't have the right elements?"
+    (is (not (check-single-attribute :color [
+                                        {:color :red}
+                                        {:shape :squiggle}
+                                        {:color :bleu}
+                                        ])))))
+(deftest all-have-same-attr
+  (testing "does it recognize when all cards have the same attrs"
+    (is (all-have-same-attributes [
+                                   {:color :red   :shape :square}
+                                   {:color :green :shape :rectangle}
+                                   {:color :pink  :shape :cat}
+                                   ]))))
+
+(deftest all-have-same-attr
+  (testing "does it recognize when one card has different attrs"
+    (is (not (all-have-same-attributes [
+                                   {:color :red   :shape :square}
+                                   {:color :green :dog :rectangle}
+                                   {:color :pink  :shape :cat}
+                                   ])))))
