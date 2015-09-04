@@ -14,26 +14,24 @@
           (apply distinct? card-attr-values)
           (= (count (set card-attr-values)) 1)))))
 
-;; TODO this seems really messy
 (defn all-have-same-attributes
-  ([cards] (all-have-same-attributes (rest cards) (set (keys (first cards)))))
-  ([cards attrs]
-   (if (empty? cards)
-     true
-     (and
-       (= (set (keys (first cards))) attrs)
-       (recur (rest cards) attrs))) ))
+  "checks if all the cards have the same attributes defined"
+  [cards]
+  (let
+    [target-keys (set (keys (first cards)))]
+    (every? true?
+      (map
+        #(= (set (keys %)) target-keys)
+        cards))))
 
-;; check that all attributes are valid for a set
-;; TODO reduce with and??
 (defn is-set?
+  "checks if a collection of cards is a set"
   [cards]
   (and
     (all-have-same-attributes cards)
-    (reduce
-      (fn [acc bool] (and acc bool))
+    (every? true?
       (map
-        (fn [attr] (check-single-attribute attr cards))
+        #(check-single-attribute % cards)
         (keys (first cards))))))
 
 (defn -main
