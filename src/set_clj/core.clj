@@ -34,6 +34,28 @@
         #(check-single-attribute % cards)
         (keys (first cards))))))
 
+;; { :color [:red] :shape [:squiggle] }
+(defn generate-deck
+  "generates a deck of cards given a list of attributes"
+  [attr-values-map]
+  (if (= 1 (count attr-values-map))
+    (let
+      [curr-pair      (first attr-values-map)
+       curr-attr      (first curr-pair)
+       curr-attr-vals (second curr-pair)]
+      (map (fn [value] (hash-map curr-attr value)) curr-attr-vals))
+
+    (let
+      [curr-pair      (first attr-values-map)
+       curr-attr      (first curr-pair)
+       curr-attr-vals (second curr-pair)
+       the-rest       (generate-deck (rest attr-values-map))]
+      (reduce
+        (fn [acc value]
+          (concat acc (map #(conj % (hash-map curr-attr value)) the-rest)))
+        []
+        curr-attr-vals))))
+
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
