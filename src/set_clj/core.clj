@@ -9,20 +9,15 @@
   (let
     [card-attr-values (map attr cards)]
     (and
-      (empty? (filter nil? card-attr-values))
+      (not (some nil? card-attr-values))
       (or
           (apply distinct? card-attr-values)
-          (= (count (set card-attr-values)) 1)))))
+          (apply =         card-attr-values)))))
 
 (defn all-have-same-attributes
   "checks if all the cards have the same attributes defined"
   [cards]
-  (let
-    [target-keys (set (keys (first cards)))]
-    (every? true?
-      (map
-        #(= (set (keys %)) target-keys)
-        cards))))
+  (apply = (map keys cards)))
 
 (defn is-set?
   "checks if a collection of cards is a set"
@@ -34,8 +29,8 @@
         #(check-single-attribute % cards)
         (keys (first cards))))))
 
-;; { :color [:red] :shape [:squiggle] }
-(defn generate-deck
+
+(defn generate-ordered-deck
   "generates a deck of cards given a list of attributes"
   [attr-values-map]
   (if (empty? attr-values-map)
@@ -47,12 +42,14 @@
       (if (= 1 (count attr-values-map))
         (map #(hash-map curr-attr %) curr-attr-vals)
         (let
-          [the-rest (generate-deck (rest attr-values-map))]
+          [the-rest (generate-deck (rest attr-values-map))] ; kill the stack
           (reduce
             (fn [acc value]
               (concat acc (map #(conj % (hash-map curr-attr value)) the-rest)))
             []
             curr-attr-vals))))))
+
+(defn generate-deck [attrs] (shuffle (generate-ordered-deck attrs)))
 
 (defn -main
   "I don't do a whole lot ... yet."
