@@ -4,7 +4,7 @@
 ;; all values different
 ;; no values nil
 (defn check-single-attribute
-  "Checks if a single attribute satisfies the set property for a collection of cards"
+  "Checks if a single attribute satisfies the set property for a sequence of cards"
   [attr cards]
   (let
     [card-attr-values (map attr cards)]
@@ -14,21 +14,15 @@
           (apply distinct? card-attr-values)
           (apply =         card-attr-values)))))
 
-(defn all-have-same-attributes
-  "checks if all the cards have the same attributes defined"
-  [cards]
-  (apply = (map keys cards)))
-
 (defn is-set?
-  "checks if a collection of cards is a set"
+  "checks if a sequence of cards is a set"
   [cards]
   (and
-    (all-have-same-attributes cards)
+    (apply = (map keys cards))
     (every? true?
       (map
         #(check-single-attribute % cards)
         (keys (first cards))))))
-
 
 (defn generate-ordered-deck
   "generates a deck of cards given a list of attributes"
@@ -42,7 +36,7 @@
       (if (= 1 (count attr-values-map))
         (map #(hash-map curr-attr %) curr-attr-vals)
         (let
-          [the-rest (generate-deck (rest attr-values-map))] ; kill the stack
+          [the-rest (generate-ordered-deck (rest attr-values-map))] ; kill the stack
           (reduce
             (fn [acc value]
               (concat acc (map #(conj % (hash-map curr-attr value)) the-rest)))

@@ -33,22 +33,6 @@
                                         {:shape :squiggle}
                                         {:color :bleu}
                                         ])))))
-(deftest all-have-same-attr
-  (testing "does it recognize when all cards have the same attrs"
-    (is (all-have-same-attributes [
-                                   {:color :red   :shape :square}
-                                   {:color :green :shape :rectangle}
-                                   {:color :pink  :shape :cat}
-                                   ]))))
-
-(deftest all-have-same-attr
-  (testing "does it recognize when one card has different attrs"
-    (is (not (all-have-same-attributes [
-                                   {:color :red   :shape :square}
-                                   {:color :green :dog :rectangle}
-                                   {:color :pink  :shape :cat}
-                                   ])))))
-
 (deftest is-set
   (testing "does it recognize a valid set"
         (is (is-set? [
