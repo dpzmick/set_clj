@@ -1,8 +1,8 @@
 (ns set-clj.core)
 
-;; all values the same
-;; all values different
-;; no values nil
+;;; all values the same
+;;; all values different
+;;; no values nil
 (defn check-single-attribute
   "Checks if a single attribute satisfies the set property for a sequence of cards"
   [attr cards]
@@ -24,26 +24,23 @@
         #(check-single-attribute % cards)
         (keys (first cards))))))
 
-(defn generate-ordered-deck
-  "generates a deck of cards given a list of attributes"
-  [attr-values-map]
-  (if (empty? attr-values-map)
-    []
-    (let
-      [curr-pair      (first attr-values-map)
-       curr-attr      (first curr-pair)
-       curr-attr-vals (second curr-pair)]
-      (if (= 1 (count attr-values-map))
-        (map #(hash-map curr-attr %) curr-attr-vals)
-        (let
-          [the-rest (generate-ordered-deck (rest attr-values-map))] ; kill the stack
-          (reduce
-            (fn [acc value]
-              (concat acc (map #(conj % (hash-map curr-attr value)) the-rest)))
-            []
-            curr-attr-vals))))))
+(defn gen-deck
+  "generates an ordered deck from the attribute map given"
+  ([attrs]
+   (gen-deck
+     (rest attrs)
+     (map #(hash-map (first (first attrs)) %) (second (first attrs)))))
 
-(defn generate-deck [attrs] (shuffle (generate-ordered-deck attrs)))
+  ([attrs cards]
+   (if (empty? attrs)
+     cards
+     (let
+       [pair   (first attrs)
+        attr   (first pair)
+        values (second pair)]
+       (recur
+         (rest attrs)
+         (flatten (map (fn [card] (map (fn [value] (assoc card attr value)) values)) cards)))))))
 
 (defn -main
   "I don't do a whole lot ... yet."
