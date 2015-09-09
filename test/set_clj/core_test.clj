@@ -47,3 +47,13 @@
                       {:color :red, :shape :squiggle, :number 2}
                       {:color :red, :shape :squiggle, :number 3}
                       ])))))
+
+(deftest is-valid-attrs
+  (testing "does it recognize valid attribute map"
+    (is (is-valid-attrs? {:color [:red :blue]
+                          :shape [:oval :sqiggle]}))))
+
+(deftest is-not-valid-attrs
+  (testing "does it recognize invalid attribute map"
+    (is (not (is-valid-attrs? {:color [:red :blue]
+                               :shape [:sqiggle]})))))

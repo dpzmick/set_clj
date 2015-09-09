@@ -1,4 +1,10 @@
-(ns set-clj.core)
+(ns set-clj.core
+  (:require  [clojure.math.combinatorics :refer [combinations]]))
+
+(defn is-valid-attrs?
+  "checks if every attribute has the same number of values"
+  [attrs]
+  (apply = (map #(count (% attrs)) (keys attrs))))
 
 ;;; all values the same
 ;;; all values different
@@ -22,10 +28,12 @@
     (every? true?
       (map
         #(check-single-attribute % cards)
-        (keys (first cards))))))
+        (keys (first cards)))))) ; all cards have same keys, so use keys of first
 
+;; at least its tail recursive :(
 (defn gen-deck
   "generates an ordered deck from the attribute map given"
+
   ([attrs]
    (gen-deck
      (rest attrs)
@@ -33,7 +41,7 @@
 
   ([attrs cards]
    (if (empty? attrs)
-     cards
+     (apply vector cards)
      (let
        [pair   (first attrs)
         attr   (first pair)
@@ -42,7 +50,14 @@
          (rest attrs)
          (flatten (map (fn [card] (map (fn [value] (assoc card attr value)) values)) cards)))))))
 
+;; TODO (first (filter )) lazy? does it save extra evaluation?
+(defn find-set
+  [deck set-size]
+  (let
+    [combs (combinations deck set-size)]
+    (first (filter is-set? combs))))
+
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
-  (println "Hello, World!"))
+  (println  "Hello world"))
