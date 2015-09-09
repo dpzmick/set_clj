@@ -5,14 +5,6 @@
   [attrs]
   (apply = (map #(count (% attrs)) (keys attrs))))
 
-;; according to ocaml code, this is the number of values per attribute
-;; this is also the size of a new hand to dram
-(defn set-size
-  "returns the size of set to use for the given attrs"
-  [attrs]
-  (let
-    [key-to-use (first (keys attrs))]
-    (count (key-to-use attrs))))
 
 ;; all values the same
 ;; all values different
@@ -57,3 +49,57 @@
        (recur
          (rest attrs)
          (flatten (map (fn [card] (map (fn [value] (assoc card attr value)) values)) cards)))))))
+
+(defn remove-all
+  [to-remove from]
+  (remove
+    (fn [e]
+      (some #(= e %) to-remove))
+    from))
+
+;; according to ocaml code, this is the number of values per attribute
+;; this is also the size of a new hand to dram
+(defn set-size
+  "returns the size of set to use for the given attrs"
+  [[attrs _ _]]
+  (let
+    [key-to-use (first (keys attrs))]
+    (count (key-to-use attrs))))
+
+(defn hand-size
+  "returns the starting size of the current hand"
+  [[attrs _ _]] (set-size attrs) * (set-size attrs))
+
+(defn make-game
+  "makes a set game and populates the initial hand"
+  [attrs]
+  (let
+    [deck        (shuffle (gen-deck attrs))
+     hand-size   (hand-size attrs)
+     deck-remain (- (count deck) hand-size)]
+
+    [attrs (take hand-size deck) (take-last deck-remain deck)]))
+
+
+; (defn draw
+;   "attempts to draw set-size more cards from the deck and add them to the hand"
+;   [[attrs hand deck]]
+;   (let
+;     [cards-to-draw (set-size attrs)]
+;     (if (< cards-to-draw (count deck))
+;       (if (= 0 (count deck))
+;         (throw (Exception. "out of cards"))
+;         [attrs (concat hand deck) []])
+;       (let
+;         [new-cards (take cards-to-draw deck)
+;          new-deck  (remove-set )]))))
+
+; (defn remove-set
+;   "removes a set from the deck, does not check if the provided cards are actually a set"
+;   [set-to-remove [attrs hand deck]]
+;   (let
+;     [new-deck (remove
+;                 (fn [card]
+;                   (some #(= card %) set-to-remove))
+;                 deck)])
+;   [attrs hand new-deck])

@@ -12,10 +12,6 @@
     (is (not (is-valid-attrs? {:color [:red :blue]
                                :shape [:sqiggle]})))))
 
-(deftest right-set-size
-  (testing "does it get the right value"
-    (is (= 3 (set-size {:color [1 2 3]})))))
-
 (deftest test-check-single-attr-same
   (testing "does it recognize all same attribute"
     (is (check-single-attribute :color [{:color :red}
@@ -52,3 +48,12 @@
                            {:color :red, :shape :squiggle, :number 2}
                            {:color :red, :shape :squiggle, :number 3}])))))
 
+;; TODO test gen-deck
+
+(deftest test-remove-all
+  (testing "does it remove them"
+    (is (empty? (remove-all [1 2 3] [1 2 3])))))
+
+(deftest test-remove-all2
+  (testing "does it remove them"
+    (is (= [2] (remove-all [1 3] [1 2 3])))))
