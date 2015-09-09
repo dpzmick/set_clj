@@ -9,7 +9,14 @@
     [combs (combinations deck set-size)]
     (first (filter is-set? combs))))
 
+(defn play-game [game]
+  (let
+    [s (find-set (game-hand game) (set-size game))]
+    s))
+
 (defn -main
-  "I don't do a whole lot ... yet."
   [& args]
-  (println  "Hello world"))
+  (println (play-game (make-game {:color   [:red :green :blue]
+                         :shape   [:squiggle :diamond :lawrence]
+                         :shading [:solid :open :shaded]
+                         :number  [1 2 3]}))))
