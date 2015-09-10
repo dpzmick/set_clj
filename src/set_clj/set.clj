@@ -87,21 +87,24 @@
       (throw (Exception. "not valid attributes")))))
 
 (defn game-hand [[_ hand _]] hand)
+(defn game-deck [[_ _ deck]] deck)
+;; ^^ there must be a better way, this is clojure!
 
 (defn remove-set
-  "removes a set from the game's deck, does not check if the provided cards are actually a set"
+  "removes a set from the game's hand, does not check if the provided cards are actually a set"
   [set-to-remove [attrs hand deck]]
-  [attrs hand (remove-all set-to-remove deck)])
+  [attrs (remove-all set-to-remove hand) deck])
 
 (defn draw
   "attempts to draw set-size more cards from the deck and add them to the hand"
   [[attrs hand deck]]
   (let
-    [cards-to-draw (set-size attrs)]
-    (if (< cards-to-draw (count deck))
+    [cards-to-draw (set-size-attrs attrs)]
+    (if (> cards-to-draw (count deck))
       (if (= 0 (count deck))
-        (throw (Exception. "out of cards"))
-        [attrs (concat hand deck) []])
+        :empty
+        ; [attrs (concat hand deck) []]
+        :notempty)
       (let
         [new-cards (take cards-to-draw deck)
          new-deck  (remove-all new-cards deck)]
